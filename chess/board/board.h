@@ -1,0 +1,188 @@
+/**
+ * @file board.h
+ * @class board
+ * @author Michael
+ * @brief aggregrates from piece
+ */
+#ifndef BOARD_H
+#define BOARD_H
+#include "../gamepieces/pieces/piece.h"
+
+class board{
+    private:
+
+        /**
+        * @brief a 2d dynamic array of piece objects
+        * 
+        */
+        piece*** board2D;
+
+        /**
+        * @brief a 2d dynamic array of string objects which carry display output
+        * 
+        */
+        std::string** outputArr;
+
+        /**
+        * @brief the row sizes and column sizes of the board
+        * 
+        */
+        const static int ROWSIZE = 8, COLSIZE = 8;
+
+        /**
+        * @brief places all 32 chess pieces on the board in their correct positions
+        * @param none
+        * 
+        * @return void
+        */
+        void initialiseBoard();
+
+        /**
+        * @brief is used to keep track of whether or not either the white or black king have been checked
+        * 
+        */
+        bool blackkingEliminated, whiteKingEliminated;
+    public:
+
+        /**
+        * @brief board constructor, creates an 8x8 board and sets up all the pieces on the board
+        * 
+        * @param none
+        * 
+        */
+        board();
+
+        /**
+        * @brief board deconstructor, deallocates the memory used by the board,
+        *  the output array and the static arrays in piece.cpp
+        * 
+        * 
+        */
+        ~board();
+
+        /**
+        * @brief returns a pointer to the entire 2d board array
+        * 
+        * @param none
+        * 
+        * @return piece***
+        */
+        piece*** getBoard();
+
+        /**
+        * @brief displays the board at the current moment
+        * 
+        * @param none
+        * 
+        * @return void
+        */
+        void displayBoard();
+
+        /**
+        * @brief returns true or false depending on whether or not black king is in check
+        * 
+        * @param none
+        * 
+        * @return bool
+        */
+        bool blackischeck();
+
+        /**
+        * @brief returns true or false depending on whether or not white king is in check
+        * 
+        * @param none
+        * 
+        * @return bool
+        */
+        bool whiteischeck();
+
+        /**
+        * @brief attempts to find open spots on the board to move the piece 
+        * that is currently located on the co-ords passed in as the parameters,
+        *  then places these open spots in a linked list for later usage
+        * 
+        * @param currentX the x-cord of the piece on the board
+        * @param currentY the y-cord of the piece on the board
+        * 
+        * @return void
+        */
+       void findOpenSpots(int currentX, int currentY);
+
+       /**
+        * @brief checks if the function findOpenSpots() did find open spots
+        *  by verifying that there is data in the linked list
+        * 
+        * @param currentX the x-cord of the piece on the board
+        * @param currentY the y-cord of the piece on the board
+        * 
+        * @return bool
+        */
+        bool spotsFound(int currentX, int currentY);
+
+        /**
+        * @brief checks that the new x and y co-ords are valid by attempting to find them in the linked list
+        * 
+        * @param currentX the x-cord of the piece on the board
+        * @param currentY the y-cord of the piece on the board
+        * @param newX the new x-cord to move the piece to
+        * @param newY the new y-cord to move the piece to
+        * 
+        * @return bool
+        */
+        bool verifyNewPos(int crrntX, int crrntY, int newX, int newY);
+
+        /**
+        * @brief gets the piece type, whether it may be a king, queen, bishop, knight, rook or pawn
+        * and returns a char like 'K','q','B','k,'r' or 'p' respectively
+        * 
+        * @param currentX the x-cord of the piece on the board
+        * @param currentY the y-cord of the piece on the board
+        * 
+        * @return char
+        */
+        char getPieceTypeBoard(int currentX, int currentY);
+
+        /**
+        * @brief gets the team colour of the piece on the board whether it may be 'b' for black or 'w' for white
+        * 
+        * @param currentX the x-cord of the piece on the board
+        * @param currentY the y-cord of the piece on the board
+        * 
+        * @return char
+        */
+        char getTeamColourBoard(int currentX, int currentY);
+
+        /**
+        * @brief changes the position of the piece on the board to the new co-ords
+        * 
+        * @param oldX the x-cord of the piece on the board
+        * @param oldY the y-cord of the piece on the board
+        * @param newX the new x-cord to move the piece to
+        * @param newY the new y-cord to move the piece to
+        * 
+        * @return void
+        */
+        void changePosition(int oldX, int oldY, int newX, int newY);
+
+        /**
+        * @brief upgrades the pawn to a queen on the board
+        * 
+        * @param currentX the x-cord of the piece on the board
+        * @param currentY the y-cord of the piece on the board
+        * @param teamcolor the team color of the piece on the board
+        * 
+        * @return void
+        */
+        void upgradePawnToQueen(int currentX, int currentY, char teamcolor);
+
+        /**
+        * @brief checks if the king is the last remaining piece on the board
+        * 
+        * @param teamcolor the team color to check for
+        * 
+        * @return bool
+        */
+        bool isStaleMate(char teamcolor);
+};
+
+#endif
