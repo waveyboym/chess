@@ -41,12 +41,13 @@ void pawn::checkOpenSpots(piece*** currentboard){
         if(checkValidity(this->x_pos, this->y_pos + 1) && currentboard[this->y_pos + 1][this->x_pos] == NULL){
             XYcoords newCoords = {this->x_pos, this->y_pos + 1};
             this->mylist->push_back(newCoords);
-        }
-        //check two positions ahead
-        if(checkValidity(this->x_pos, this->y_pos + 2) && this->y_pos + 2 <= 3
-        && currentboard[this->y_pos + 2][this->x_pos] == NULL){
-            XYcoords newCoords = {this->x_pos, this->y_pos + 2};
-            this->mylist->push_back(newCoords);
+
+            //check two positions ahead
+            if(checkValidity(this->x_pos, this->y_pos + 2) && this->y_pos + 2 <= 3
+                && currentboard[this->y_pos + 2][this->x_pos] == NULL){
+                    XYcoords newCoords = {this->x_pos, this->y_pos + 2};
+                    this->mylist->push_back(newCoords);
+            }
         }
         //check right diagonal
         if(checkValidity(this->x_pos + 1, this->y_pos + 1) && (currentboard[this->y_pos + 1][this->x_pos + 1] != NULL
@@ -66,13 +67,15 @@ void pawn::checkOpenSpots(piece*** currentboard){
         if(checkValidity(this->x_pos, this->y_pos - 1) && currentboard[this->y_pos - 1][this->x_pos] == NULL){
             XYcoords newCoords = {this->x_pos, this->y_pos - 1};
             this->mylist->push_back(newCoords);
+
+            //check two positions ahead
+            if(checkValidity(this->x_pos, this->y_pos - 2) && this->y_pos - 2 >= 4
+            && currentboard[this->y_pos - 2][this->x_pos] == NULL){
+                XYcoords newCoords = {this->x_pos, this->y_pos - 2};
+                this->mylist->push_back(newCoords);
+            }
         }
-        //check two positions ahead
-        if(checkValidity(this->x_pos, this->y_pos - 2) && this->y_pos - 2 >= 4
-        && currentboard[this->y_pos - 2][this->x_pos] == NULL){
-            XYcoords newCoords = {this->x_pos, this->y_pos - 2};
-            this->mylist->push_back(newCoords);
-        }
+        
         //check right diagonal
         if(checkValidity(this->x_pos + 1, this->y_pos - 1) && (currentboard[this->y_pos - 1][this->x_pos + 1] != NULL
          && currentboard[this->y_pos - 1][this->x_pos + 1]->getTeamColour() == 'w')){
