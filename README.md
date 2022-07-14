@@ -2,15 +2,15 @@
 An object oriented approach to chess in C++
 
 # class diagram
-
+![class diagram](preview-img/chess%20class%20diagrams.jpg "class diagram")
 
 # brief
 uses object oriented principles such as inheritance and polymorphism to implement a chess game on a board which aggregrate from the chess pieces. This project is done in C++98.
 
 # features to be implemented
-en passant
-castling
-an interactive board
+1. en passant
+2. castling
+3. an interactive board
 
 # to run this code you will need to install:
 1. make: https://linuxhint.com/install-make-ubuntu/
