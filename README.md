@@ -22,10 +22,12 @@ uses object oriented principles such as inheritance and polymorphism to implemen
 
 
 # to run the code:
-open a terminal in the directory where the file is located, so if you wanted to test run the c++ version, you would open a terminal in a directory like so: "parent_directory/child_directory/c++"
+open a terminal in the directory where the file is located, you would open a terminal in a directory like so: "parent_directory/child_directory/chess"
 1. type in the command make to compile the files
 2. type in the command make run to run the files
-3. type in make clean to clear out compilation files after running
+3. type in make clean to clear out compilation files after running(optional, compilation takes a bit of time so you can decide to not clean out the object code)
+
+*all of the files have already been compiled and linked so you only need to run them but you can still recompile them if you'd like to*
 
 # make commands
 1. make - compiles files
