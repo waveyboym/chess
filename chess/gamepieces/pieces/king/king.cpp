@@ -70,7 +70,75 @@ bool king::can_CheckKing(int currentX, int currentY, char teamcolor, piece*** cu
     return false;
 }
 
+bool king::can_move_out_of_check(int currentX, int currentY, char teamcolor, piece*** currentboard){
 
+    if(checkValidityAndNull(currentX - 1, currentY - 1, currentboard)
+        || checkValidityNotNullOppTeam(currentX - 1, currentY - 1, currentboard, teamcolor)){
+
+            if(can_CheckKing(currentX - 1, currentY - 1, teamcolor, currentboard) == false){
+                return true;
+            }
+    }
+    //top-right diagonal
+    if(checkValidityAndNull(currentX + 1, currentY - 1, currentboard)
+        || checkValidityNotNullOppTeam(currentX + 1, currentY - 1, currentboard, teamcolor)){
+            
+            if(can_CheckKing(currentX + 1, currentY - 1, teamcolor, currentboard) == false){
+                return true;
+            }
+    }
+    //bottom-left diagonal
+    if(checkValidityAndNull(currentX - 1, currentY + 1, currentboard)
+        || checkValidityNotNullOppTeam(currentX - 1, currentY + 1, currentboard, teamcolor)){
+            
+            if(can_CheckKing(currentX - 1, currentY + 1, teamcolor, currentboard) == false){
+                return true;
+            }
+    }
+    //bottom-right diagonal
+    if(checkValidityAndNull(currentX + 1, currentY + 1, currentboard)
+        || checkValidityNotNullOppTeam(currentX + 1, currentY + 1, currentboard, teamcolor)){
+            
+            if(can_CheckKing(currentX + 1, currentY + 1, teamcolor, currentboard) == false){
+                return true;
+            }
+    }
+
+    //checking forward y direction
+    if(checkValidityAndNull(currentX, currentY - 1, currentboard)
+        || checkValidityNotNullOppTeam(currentX, currentY - 1, currentboard, teamcolor)){
+            
+            if(can_CheckKing(currentX, currentY - 1, teamcolor, currentboard) == false){
+                return true;
+            }
+    }
+    //checking backward y direction
+    if(checkValidityAndNull(currentX, currentY + 1, currentboard)
+        || checkValidityNotNullOppTeam(currentX, currentY + 1, currentboard, teamcolor)){
+            
+            if(can_CheckKing(currentX, currentY + 1, teamcolor, currentboard) == false){
+                return true;
+            }
+    }
+    //checking left x direction
+    if(checkValidityAndNull(currentX - 1, currentY, currentboard)
+        || checkValidityNotNullOppTeam(currentX - 1, currentY, currentboard, teamcolor)){
+            
+            if(can_CheckKing(currentX - 1, currentY, teamcolor, currentboard) == false){
+                return true;
+            }
+    }
+    //checking right x direction
+    if(checkValidityAndNull(currentX + 1, currentY, currentboard)
+        || checkValidityNotNullOppTeam(currentX + 1, currentY, currentboard, teamcolor)){
+            
+            if(can_CheckKing(currentX + 1, currentY, teamcolor, currentboard) == false){
+                return true;
+            }
+    }
+
+    return false;
+}
 
 
 king::king(int newX, int newY, char teamcolour, char piecetype)

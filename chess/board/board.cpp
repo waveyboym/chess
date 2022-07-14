@@ -22,6 +22,32 @@ std::string determinePieceName(char piecetype){
     else return "king";//'K'
 }
 
+std::string determineTeamColor(char teamcolor){
+    if(teamcolor == 'b')return "black";
+    else return "white";
+}
+
+struct tempKingCoordsStore {
+    int y;
+    int x;
+};
+
+tempKingCoordsStore getKingXY_Co_Ord(piece*** chessboard, char teamcolor){
+    tempKingCoordsStore coords = {-1, -1};
+    for(int i = 0; i < 8; ++i){
+        for(int j = 0; j < 8; ++j){
+            if(chessboard[i][j] != NULL){
+                if(chessboard[i][j]->getPieceType()== 'K' && chessboard[i][j]->getTeamColour() == teamcolor){
+                    coords.x = j;
+                    coords.y = i;
+                    return coords;
+                }
+            }
+        }
+    }
+    return coords;
+}
+
 board::board(){
     this->board2D = new piece**[this->ROWSIZE];
     for(int i = 0; i < this->ROWSIZE; ++i){
@@ -30,9 +56,10 @@ board::board(){
             this->board2D[i][j] = NULL;
         }
     }
-    this->blackkingEliminated = false;
-    this->whiteKingEliminated = false;
     this->initialiseBoard();
+    this->stackADT = new stack();
+    this->blackKingInCheck = false;
+    this->whiteKingInCheck = false;
 
     this->outputArr = new std::string*[this->ROWSIZE];
     for(int i = 0; i < this->ROWSIZE; ++i){
@@ -53,6 +80,8 @@ board::~board(){
     }
     delete [] this->board2D;
     this->board2D = NULL;
+
+    this->stackADT->~stack();
 
     for(int i = 0; i < this->ROWSIZE; ++i){
         if(this->outputArr[i] != NULL){
@@ -154,29 +183,36 @@ void board::displayBoard(){
 }
 
 void board::changePosition(int oldX, int oldY, int newX, int newY){
+    previousMove newdata;
+    newdata.oldX = oldX;
+    newdata.oldY = oldY;
+    newdata.newX = newX;
+    newdata.newY = newY;
+    newdata.pieceTakenCol = 'e';
+    newdata.pieceTakenType = 'e';
+    newdata.tookOutPiece = false;
+
     if(this->board2D[newY][newX] != NULL){
         std::cout << "eliminated: " << this->board2D[newY][newX]->getTeamColour() << " " << determinePieceName(this->board2D[newY][newX]->getPieceType()) << std::endl;
-        if(this->board2D[newY][newX]->getPieceType() == 'K' && this->board2D[newY][newX]->getTeamColour() == 'w'){
-            this->whiteKingEliminated = true;
-        }
-        else if(this->board2D[newY][newX]->getPieceType() == 'K' && this->board2D[newY][newX]->getTeamColour() == 'b'){
-            this->blackkingEliminated = true;
-        }
-
+        newdata.pieceTakenCol = this->board2D[newY][newX]->getTeamColour();
+        newdata.pieceTakenType = this->board2D[newY][newX]->getPieceType();
+        newdata.tookOutPiece = true;
         delete this->board2D[newY][newX];
     }
+
     this->board2D[newY][newX] = this->board2D[oldY][oldX];
     this->board2D[newY][newX]->changeX_and_Y_Pos(newX, newY);
     this->board2D[oldY][oldX] = NULL;
+    this->stackADT->push(newdata);
 }
 
 void board::upgradePawnToQueen(int currentX, int currentY, char teamcolor){
-    if(teamcolor == 'b'){
+    if(teamcolor == 'b' && currentY == 0){
         std::cout << "upgrading black pawn to queen" << std::endl;
         delete this->board2D[currentY][currentX];
         this->board2D[currentY][currentX] = new queen(currentX, currentY, 'b', 'q');
     }
-    else if(teamcolor == 'w'){
+    else if(teamcolor == 'w' && currentY == 7){
         std::cout << "upgrading white pawn to queen" << std::endl;
         delete this->board2D[currentY][currentX];
         this->board2D[currentY][currentX] = new queen(currentX, currentY, 'w', 'q');
@@ -188,34 +224,57 @@ bool board::spotsFound(int currentX, int currentY){
     else return false;
 }
 
-bool board::isStaleMate(char teamcolor){
-    if(teamcolor == 'b'){
-        int countOfBlackPieces = 0;
+bool board::isKingInCheck(char teamcolor){
+    tempKingCoordsStore XY = getKingXY_Co_Ord(this->board2D, teamcolor);
+    if(XY.x == -1 || XY.y == -1)return true;
+    if(!king::can_CheckKing(XY.x, XY.y, teamcolor, this->board2D)){
+        if(teamcolor == 'b')this->blackKingInCheck = false;
+        else if(teamcolor == 'w')this->whiteKingInCheck = false;
 
-        for(int i = 0; i < this->ROWSIZE; ++i){
-            for(int j = 0; j < this->COLSIZE; ++j){
-                if(this->board2D[i][j] != NULL && this->board2D[i][j]->getTeamColour() == 'b'){
-                    ++countOfBlackPieces;
-                }
-
-                if(countOfBlackPieces >= 2)return false;
-            }
-        }
+        return false;
     }
-    else{
-        int countOfWhitePieces = 0;
+    if(king::can_move_out_of_check(XY.x, XY.y, teamcolor, this->board2D)){
+        std::cout << determineTeamColor(teamcolor) << "'s king is in risk of being checked but there " <<
+        "are open spots for " << determineTeamColor(teamcolor) << "'s king to move to" << std::endl;
 
-        for(int i = 0; i < this->ROWSIZE; ++i){
-            for(int j = 0; j < this->COLSIZE; ++j){
-                if(this->board2D[i][j] != NULL && this->board2D[i][j]->getTeamColour() == 'w'){
-                    ++countOfWhitePieces;
-                }
+        if(teamcolor == 'b')this->blackKingInCheck = true;
+        else if(teamcolor == 'w')this->whiteKingInCheck = true;
 
-                if(countOfWhitePieces >= 2)return false;
-            }
-        }
+        return false;
     }
     return true;
+}
+
+bool board::isKingStillInCheck(char teamcolor){
+    if(teamcolor == 'b')return this->blackKingInCheck;
+    else return this->whiteKingInCheck;
+}
+
+void board::undoPreviousMove(){
+    previousMove oldData = this->stackADT->pop();
+    this->board2D[oldData.oldY][oldData.oldX] = this->board2D[oldData.newY][oldData.newX];
+    this->board2D[oldData.oldY][oldData.oldX]->changeX_and_Y_Pos(oldData.oldX, oldData.oldY);
+    if(oldData.tookOutPiece == true){
+        if(oldData.pieceTakenType == 'p'){
+            this->board2D[oldData.newY][oldData.newX] = new pawn(oldData.newX, oldData.newY, oldData.pieceTakenCol, 'p');
+        }
+        else if(oldData.pieceTakenType == 'r'){
+            this->board2D[oldData.newY][oldData.newX] = new rook(oldData.newX, oldData.newY, oldData.pieceTakenCol, 'r');
+        }
+        else if(oldData.pieceTakenType == 'k'){
+            this->board2D[oldData.newY][oldData.newX] = new knight(oldData.newX, oldData.newY, oldData.pieceTakenCol, 'k');
+        }
+        else if(oldData.pieceTakenType == 'B'){
+            this->board2D[oldData.newY][oldData.newX] = new bishop(oldData.newX, oldData.newY, oldData.pieceTakenCol, 'B');
+        }
+        else if(oldData.pieceTakenType == 'q'){
+            this->board2D[oldData.newY][oldData.newX] = new queen(oldData.newX, oldData.newY, oldData.pieceTakenCol, 'q');
+        }
+        else if(oldData.pieceTakenType == 'K'){
+            this->board2D[oldData.newY][oldData.newX] = new king(oldData.newX, oldData.newY, oldData.pieceTakenCol, 'K');
+        }
+    }
+    else this->board2D[oldData.newY][oldData.newX] = NULL;
 }
 
 piece*** board::getBoard(){ return this->board2D;}
@@ -227,7 +286,3 @@ bool board::verifyNewPos(int crrntX, int crrntY, int newX, int newY){return this
 char board::getPieceTypeBoard(int currentX, int currentY){return this->board2D[currentY][currentX]->getPieceType();}
 
 char board::getTeamColourBoard(int currentX, int currentY){return this->board2D[currentY][currentX]->getTeamColour();}
-
-bool board::blackischeck(){return this->blackkingEliminated;}
-
-bool board::whiteischeck(){return this->whiteKingEliminated;}

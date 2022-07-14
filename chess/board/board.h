@@ -2,11 +2,12 @@
  * @file board.h
  * @class board
  * @author Michael
- * @brief aggregrates from piece
+ * @brief aggregrates from piece and stack
  */
 #ifndef BOARD_H
 #define BOARD_H
 #include "../gamepieces/pieces/piece.h"
+#include "stack.h"
 
 class board{
     private:
@@ -24,6 +25,12 @@ class board{
         std::string** outputArr;
 
         /**
+        * @brief a stack which holds detail about the most recently completed move at the top
+        * 
+        */
+        stack* stackADT;
+
+        /**
         * @brief the row sizes and column sizes of the board
         * 
         */
@@ -38,10 +45,10 @@ class board{
         void initialiseBoard();
 
         /**
-        * @brief is used to keep track of whether or not either the white or black king have been checked
+        * @brief is used as a flag for indicating if the king is in a posiible check
         * 
         */
-        bool blackkingEliminated, whiteKingEliminated;
+        bool whiteKingInCheck, blackKingInCheck;
     public:
 
         /**
@@ -77,24 +84,6 @@ class board{
         * @return void
         */
         void displayBoard();
-
-        /**
-        * @brief returns true or false depending on whether or not black king is in check
-        * 
-        * @param none
-        * 
-        * @return bool
-        */
-        bool blackischeck();
-
-        /**
-        * @brief returns true or false depending on whether or not white king is in check
-        * 
-        * @param none
-        * 
-        * @return bool
-        */
-        bool whiteischeck();
 
         /**
         * @brief attempts to find open spots on the board to move the piece 
@@ -153,6 +142,15 @@ class board{
         char getTeamColourBoard(int currentX, int currentY);
 
         /**
+        * @brief checks if the king is still in check, returns true if it is
+        * 
+        * @param teamcolor the team color to check for
+        * 
+        * @return bool
+        */
+        bool isKingStillInCheck(char teamcolor);
+
+        /**
         * @brief changes the position of the piece on the board to the new co-ords
         * 
         * @param oldX the x-cord of the piece on the board
@@ -176,13 +174,23 @@ class board{
         void upgradePawnToQueen(int currentX, int currentY, char teamcolor);
 
         /**
-        * @brief checks if the king is the last remaining piece on the board
+        * @brief checks if the king is in check, returns true if it is
         * 
         * @param teamcolor the team color to check for
         * 
         * @return bool
         */
-        bool isStaleMate(char teamcolor);
+        bool isKingInCheck(char teamcolor);
+
+        /**
+        * @brief undoes the previously/most recently completed move
+        * 
+        * @param none
+        * 
+        * @return void
+        */
+        void undoPreviousMove();
+
 };
 
 #endif

@@ -2,7 +2,7 @@
  * @file piece.h
  * @class piece
  * @author Michael
- * @brief aggregrates from Llist and piecedata
+ * @brief aggregrates from Llist
  */
 #ifndef PIECE_H
 #define PIECE_H

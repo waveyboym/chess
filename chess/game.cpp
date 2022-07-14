@@ -20,6 +20,11 @@ int playersnum(int num){
     else return 1;
 }
 
+char playercolor(int num){
+    if(num == 1)return 'b';
+    else return 'w';
+}
+
 game::game(){this->currentPlayerTurn = 1;this->boardgame = new board();}
 
 game::~game(){delete this->boardgame;}
@@ -28,56 +33,41 @@ char game::playgame(){
     char endgame = 'c';
     this->boardgame->displayBoard();
     while(endgame != 'q' && endgame != 'r'){
-        int currentX, currentY;
-        std::cout << "player " << this->currentPlayerTurn << "'s turn" << std::endl;
-        std::cout << "select a piece you would like to move by entering it's y and x co-ords" << std::endl;
-        std::cout << "enter the x co-ord: ";
-        std::cin >> currentX;
-        std::cout << "enter the y co-ord: ";
-        std::cin >> currentY;
-        if(checkValidity(currentX, currentY, this->boardgame->getBoard())){
+        if(endgame == 'u')this->undoPrevMove();
+        endgame = 'c';
 
-            //its player ones turn but selected white piece
-            if(this->currentPlayerTurn == 1 && this->boardgame->getTeamColourBoard(currentX, currentY) == 'w'){
-                std::cout << "you tried to select player 2's white pieces" << std::endl;
-                continue;
-            }
-            //its player twos turn but selected black piece
-            if(this->currentPlayerTurn == 2 && this->boardgame->getTeamColourBoard(currentX, currentY) == 'b'){
-                std::cout << "you tried to select player 1's black pieces" << std::endl;
-                continue;
-            }
+        userInput selectedPiece = this->user_Prompt_PieceSelection();
 
-            this->boardgame->findOpenSpots(currentX, currentY);
-            if(this->boardgame->spotsFound(currentX, currentY)){
-                int newX, newY;
-                std::cout << "enter the co-ords to move to" << std::endl;
-                std::cout << "enter the x co-ord: ";
-                std::cin >> newX;
-                std::cout << "enter the y co-ord: ";
-                std::cin >> newY;
-                if(this->boardgame->verifyNewPos(currentX, currentY, newX, newY)){
-                    this->boardgame->changePosition(currentX, currentY, newX, newY);
-                    if((newY == 0 || newY == 7) && this->boardgame->getPieceTypeBoard(newX, newY) == 'p')
-                        this->boardgame->upgradePawnToQueen(newX, newY, this->boardgame->getTeamColourBoard(newX, newY));
+        if(checkValidity(selectedPiece.x, selectedPiece.y, this->boardgame->getBoard())){
+
+            if(this->correctPlayerPieceSelected(selectedPiece.x, selectedPiece.y))continue;
+
+            this->boardgame->findOpenSpots(selectedPiece.x, selectedPiece.y);
+
+            if(this->boardgame->spotsFound(selectedPiece.x, selectedPiece.y)){
+
+                userInput moveTo = this->user_Prompt_PieceMoveTo();
+
+                if(this->boardgame->verifyNewPos(selectedPiece.x, selectedPiece.y, moveTo.x, moveTo.y)){
+
+                    this->boardgame->changePosition(selectedPiece.x, selectedPiece.y, moveTo.x, moveTo.y);
                     
+                    if(this->boardgame->isKingInCheck(playercolor(this->currentPlayerTurn))
+                    || this->boardgame->isKingStillInCheck(playercolor(this->currentPlayerTurn))){
+                        std::cout << "you cannot play that move when your king is in risk of being checked" << std::endl;
+                        this->boardgame->undoPreviousMove();
+                        continue;
+                    }
+
+                    if((moveTo.x == 0 || moveTo.y == 7) && this->boardgame->getPieceTypeBoard(moveTo.x, moveTo.y) == 'p')
+                        this->boardgame->upgradePawnToQueen(moveTo.x, moveTo.y, this->boardgame->getTeamColourBoard(moveTo.x, moveTo.y));
+                    
+
                     if(this->currentPlayerTurn == 1){ this->currentPlayerTurn = 2;}
                     else if(this->currentPlayerTurn == 2){ this->currentPlayerTurn = 1;}
                 }
-            }
-            else{
-                if(this->currentPlayerTurn == 1 && this->boardgame->isStaleMate('b')){//check if the black king is the only remaining piece
-                    std::cout << "game is a stalemate, enter r to replay or enter any other character to exit the program: ";
-                    std::cin >> endgame;
-                    break;
-                }
-                else if(this->currentPlayerTurn == 2 && this->boardgame->isStaleMate('w')){//check if the black king is the only remaining piece
-                    std::cout << "game is a stalemate, enter r to replay or enter any other character to exit the program: ";
-                    std::cin >> endgame;
-                    break;
-                }
                 else{
-                    std::cout << "there are no open spots for this piece" << std::endl;
+                    std::cout << "those are invalid co-ords, please try again" << std::endl;
                 }
             }
         }
@@ -86,16 +76,73 @@ char game::playgame(){
         }
         this->boardgame->displayBoard();
         
-        if(this->boardgame->blackischeck() || this->boardgame->whiteischeck()){
-            std::cout << "player " << playersnum(this->currentPlayerTurn) << " won. press r to restart the game\n or q to exit the game: ";
+        if(this->boardgame->isKingInCheck(playercolor(this->currentPlayerTurn))){
+            std::cout << "your king is in risk of being checked. press r to restart the game\n";
+            std::cout << "or q to exit the game or u to undo the previous move or any character to continue: ";
             std::cin >> endgame;
-            return endgame;
+            continue;
         }
         std::cout << "press ctrl-c or q to exit the program\n";
-        std::cout << "or enter any character to continue or press r to restart the game: ";
+        std::cout << "or enter any character to continue or press r to restart the game\n";
+        std::cout << "or enter u to undo the previous move:\n";
         std::cin >> endgame;
     }
-
+  
+    if(this->boardgame->isKingStillInCheck(playercolor(this->currentPlayerTurn))){
+        std::cout << "player " << playersnum(this->currentPlayerTurn) << " won.\n";
+    }
+    else{
+        std::cout << "game has been forfeited or ended as a stalemate" << std::endl;
+    }
     //returns a char containing r for replaying the game or any other character to exit the program
     return endgame;
+}
+
+void game::undoPrevMove(){
+    this->boardgame->undoPreviousMove();
+    this->boardgame->displayBoard();
+    this->currentPlayerTurn = playersnum(this->currentPlayerTurn);
+}
+
+userInput game::user_Prompt_PieceSelection(){
+    int currentX, currentY;
+    std::cout << "player " << this->currentPlayerTurn << "'s turn" << std::endl;
+    std::cout << "select a piece you would like to move by entering it's x and y co-ords" << std::endl;
+    std::cout << "enter the x co-ord: ";
+    std::cin >> currentX;
+    std::cout << "enter the y co-ord: ";
+    std::cin >> currentY;
+
+    userInput data;
+    data.x = currentX;
+    data.y = currentY;
+    return data;
+}
+
+bool game::correctPlayerPieceSelected(int currentX, int currentY){
+    //its player ones turn but selected white piece
+    if(this->currentPlayerTurn == 1 && this->boardgame->getTeamColourBoard(currentX, currentY) == 'w'){
+        std::cout << "you tried to select player 2's white pieces" << std::endl;
+        return false;
+    }
+    //its player twos turn but selected black piece
+    if(this->currentPlayerTurn == 2 && this->boardgame->getTeamColourBoard(currentX, currentY) == 'b'){
+        std::cout << "you tried to select player 1's black pieces" << std::endl;
+        return false;
+    }
+    return true;
+}
+
+userInput game::user_Prompt_PieceMoveTo(){
+    int newX, newY;
+    std::cout << "enter the co-ords to move to" << std::endl;
+    std::cout << "enter the x co-ord: ";
+    std::cin >> newX;
+    std::cout << "enter the y co-ord: ";
+    std::cin >> newY;
+
+    userInput data;
+    data.x = newX;
+    data.y = newY;
+    return data;
 }

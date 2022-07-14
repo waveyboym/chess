@@ -16,7 +16,7 @@ bool pawn::can_pawn_check_king(int currentX, int currentY, char teamcolor, piece
         && currentboard[currentY - 1][currentX + 1]->getTeamColour() != teamcolor)return true;
         //check left diagonal
         if(piece::checkIfValid(currentX - 1, currentY - 1, currentboard)
-        && currentboard[currentY - 1][currentX + 1]->getTeamColour() != teamcolor)return true;
+        && currentboard[currentY - 1][currentX - 1]->getTeamColour() != teamcolor)return true;
     }
 
     //all tests failed so no pawn can check the king in this position

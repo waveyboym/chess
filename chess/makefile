@@ -3,7 +3,7 @@ CC = g++
 CFLAGS = -std=c++98 -c
 LFLAGS = -g -std=c++98
 TARGET = chessgame
-OBJECTS = Llist.o piece.o queen.o bishop.o knight.o rook.o pawn.o king.o board.o game.o main.o
+OBJECTS = Llist.o piece.o queen.o bishop.o knight.o rook.o pawn.o king.o stack.o board.o game.o main.o
 
 #linking the object code
 all: $(OBJECTS)
@@ -38,11 +38,15 @@ piece.o: gamepieces/pieces/piece.cpp gamepieces/pieces/piece.h \
 Llist.o: gamepieces/linkedlist/Llist.cpp gamepieces/linkedlist/Llist.h
 	$(CC) $(CFLAGS) gamepieces/linkedlist/Llist.cpp
 
-board.o: board/board.cpp board/board.h gamepieces/pieces/piece.h gamepieces/pieces/pawn/pawn.h \
+board.o: board/board.cpp board/board.h board/stack.h gamepieces/pieces/piece.h gamepieces/pieces/pawn/pawn.h \
 		 gamepieces/pieces/rook/rook.h gamepieces/pieces/knight/knight.h \
 		 gamepieces/pieces/bishop/bishop.h gamepieces/pieces/queen/queen.h \
 		 gamepieces/pieces/king/king.h
 	$(CC) $(CFLAGS) board/board.cpp
+
+stack.o: board/stack.cpp board/stack.h
+	$(CC) $(CFLAGS) board/stack.cpp
+
 game.o: game.cpp board/board.h
 	$(CC) $(CFLAGS) game.cpp
 
