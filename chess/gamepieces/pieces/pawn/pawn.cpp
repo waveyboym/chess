@@ -5,18 +5,34 @@ bool pawn::can_pawn_check_king(int currentX, int currentY, char teamcolor, piece
     if(teamcolor == 'w'){//check black pieces on opposing team
         //check right diagonal
         if(piece::checkIfValid(currentX + 1, currentY + 1, currentboard)
-        && currentboard[currentY + 1][currentX + 1]->getTeamColour() != teamcolor)return true;
+        && currentboard[currentY + 1][currentX + 1]->getTeamColour() != teamcolor) {
+            piece::posArr[piece_X] = currentX + 1;
+            piece::posArr[piece_Y] = currentY + 1;
+            return true;
+        }
         //check left diagonal
         if(piece::checkIfValid(currentX - 1, currentY + 1, currentboard)
-        && currentboard[currentY + 1][currentX - 1]->getTeamColour() != teamcolor)return true;
+        && currentboard[currentY + 1][currentX - 1]->getTeamColour() != teamcolor) {
+            piece::posArr[piece_X] = currentX - 1;
+            piece::posArr[piece_Y] = currentY + 1;
+            return true;
+        }
     }
     else if(teamcolor == 'b'){//check white pieces on opposing team
         //check right diagonal
         if(piece::checkIfValid(currentX + 1, currentY - 1, currentboard)
-        && currentboard[currentY - 1][currentX + 1]->getTeamColour() != teamcolor)return true;
+        && currentboard[currentY - 1][currentX + 1]->getTeamColour() != teamcolor) {
+            piece::posArr[piece_X] = currentX + 1;
+            piece::posArr[piece_Y] = currentY - 1;
+            return true;
+        }
         //check left diagonal
         if(piece::checkIfValid(currentX - 1, currentY - 1, currentboard)
-        && currentboard[currentY - 1][currentX - 1]->getTeamColour() != teamcolor)return true;
+        && currentboard[currentY - 1][currentX - 1]->getTeamColour() != teamcolor) {
+            piece::posArr[piece_X] = currentX - 1;
+            piece::posArr[piece_Y] = currentY - 1;
+            return true;
+        }
     }
 
     //all tests failed so no pawn can check the king in this position

@@ -1,5 +1,7 @@
 #include "piece.h"
 
+int piece::posArr[2];
+
 std::string piece::determinepieceName(char piecetype){
     if(piecetype == 'p')return "pawn";
     else if(piecetype == 'r') return "rook";

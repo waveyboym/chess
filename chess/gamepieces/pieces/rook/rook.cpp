@@ -9,7 +9,11 @@ bool rook::can_rook_check_king(int currentX, int currentY, char teamcolor, piece
                 break;//because friend teammate is protecting top-left diagonal
             }
             else if(currentboard[currentY - i][currentX]->getTeamColour() != teamcolor){
-                if(currentboard[currentY - i][currentX]->getPieceType() == 'r')return true;
+                if(currentboard[currentY - i][currentX]->getPieceType() == 'r') {
+                    piece::posArr[piece_X] = currentX;
+                    piece::posArr[piece_Y] = currentY - i;
+                    return true;
+                }
                 else break;//no comprimising piece
             }
         }
@@ -21,7 +25,11 @@ bool rook::can_rook_check_king(int currentX, int currentY, char teamcolor, piece
                 break;//because friend teammate is protecting top-left diagonal
             }
             else if(currentboard[currentY + i][currentX]->getTeamColour() != teamcolor){
-                if(currentboard[currentY + i][currentX]->getPieceType() == 'r')return true;
+                if(currentboard[currentY + i][currentX]->getPieceType() == 'r') {
+                    piece::posArr[piece_X] = currentX;
+                    piece::posArr[piece_Y] = currentY + i;
+                    return true;
+                }
                 else break;//no comprimising piece
             }
         }
@@ -33,7 +41,11 @@ bool rook::can_rook_check_king(int currentX, int currentY, char teamcolor, piece
                 break;//because friend teammate is protecting top-left diagonal
             }
             else if(currentboard[currentY][currentX - i]->getTeamColour() != teamcolor){
-                if(currentboard[currentY][currentX - i]->getPieceType() == 'r')return true;
+                if(currentboard[currentY][currentX - i]->getPieceType() == 'r') {
+                    piece::posArr[piece_X] = currentX - i;
+                    piece::posArr[piece_Y] = currentY;
+                    return true;
+                }
                 else break;//no comprimising piece
             }
         }
@@ -45,7 +57,11 @@ bool rook::can_rook_check_king(int currentX, int currentY, char teamcolor, piece
                 break;//because friend teammate is protecting top-left diagonal
             }
             else if(currentboard[currentY][currentX + i]->getTeamColour() != teamcolor){
-                if(currentboard[currentY][currentX + i]->getPieceType() == 'r')return true;
+                if(currentboard[currentY][currentX + i]->getPieceType() == 'r') {
+                    piece::posArr[piece_X] = currentX + i;
+                    piece::posArr[piece_Y] = currentY;
+                    return true;
+                }
                 else break;//no comprimising piece
             }
         }

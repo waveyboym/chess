@@ -87,6 +87,17 @@ class king : public piece{
         * @return bool
         */
         static bool can_move_out_of_check(int currentX, int currentY, char teamcolor, piece*** currentboard);
+
+        //static function
+        /**
+        * @brief checks if any piece save the king from being checked can move out of check
+        *
+        * @param teamcolor the team color of the king piece which called this function
+        * @param currentboard a pointer to the current 2d board of piece objects
+        *
+        * @return bool
+        */
+        static bool can_piece_save_King(char teamcolor, piece*** currentboard);
 };
 
 #endif

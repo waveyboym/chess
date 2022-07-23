@@ -18,15 +18,17 @@ stack::~stack(){
     this->topStack = NULL;
 }
 
-void stack::push(int newX, int newY, int oldX, int oldY, bool tookPiece, char piecetype, char teamcolor){
+void stack::push(int newX, int newY, int oldX, int oldY, bool tookPiece, char piecetype, char teamcolor, char takenpiecetype, char takenpicecol){
     previousMove* newNode = new previousMove;
     newNode->newX = newX;
     newNode->newY = newY;
     newNode->oldX = oldX;
     newNode->oldY = oldY;
     newNode->tookOutPiece = tookPiece;
-    newNode->pieceTakenType = piecetype;
-    newNode->pieceTakenCol = teamcolor;
+    newNode->pieceType = piecetype;
+    newNode->pieceCol = teamcolor;
+    newNode->pieceTakenType = takenpiecetype;
+    newNode->pieceTakenCol = takenpicecol;
     newNode->below = NULL;
 
     if(this->topStack == NULL)this->topStack = newNode;
@@ -43,6 +45,8 @@ void stack::push(previousMove newdata){
     newNode->oldX = newdata.oldX;
     newNode->oldY = newdata.oldY;
     newNode->tookOutPiece = newdata.tookOutPiece;
+    newNode->pieceType = newdata.pieceType;
+    newNode->pieceCol = newdata.pieceCol;
     newNode->pieceTakenType = newdata.pieceTakenType;
     newNode->pieceTakenCol = newdata.pieceTakenCol;
     newNode->below = NULL;
@@ -56,13 +60,14 @@ void stack::push(previousMove newdata){
 
 previousMove stack::pop(){
     previousMove toReturn;
-    if(this->topStack == NULL)return toReturn;
     
     toReturn.newX = this->topStack->newX;
     toReturn.newY = this->topStack->newY;
     toReturn.oldX = this->topStack->oldX;
     toReturn.oldY = this->topStack->oldY;
     toReturn.tookOutPiece = this->topStack->tookOutPiece;
+    toReturn.pieceType = this->topStack->pieceType;
+    toReturn.pieceCol = this->topStack->pieceCol;
     toReturn.pieceTakenType = this->topStack->pieceTakenType;
     toReturn.pieceTakenCol = this->topStack->pieceTakenCol;
     toReturn.below = NULL;
@@ -88,4 +93,10 @@ void stack::clearStack(){
         nodePtr = nextNode;
     }
     this->topStack = NULL;
+}
+
+bool stack::empty()
+{
+    if (this->topStack == NULL)return true;
+    else return false;
 }

@@ -9,7 +9,11 @@ bool bishop::can_bishop_check_king(int currentX, int currentY, char teamcolor, p
                 break;//because friend teammate is protecting top-left diagonal
             }
             else if(currentboard[currentY - i][currentX - i]->getTeamColour() != teamcolor){
-                if(currentboard[currentY - i][currentX - i]->getPieceType() == 'B')return true;
+                if (currentboard[currentY - i][currentX - i]->getPieceType() == 'B') {
+                    piece::posArr[piece_X] = currentX - i;
+                    piece::posArr[piece_Y] = currentY - i;
+                    return true;
+                }
                 else break;
             }
         }
@@ -22,7 +26,11 @@ bool bishop::can_bishop_check_king(int currentX, int currentY, char teamcolor, p
                 break;//because friend teammate is protecting top-left diagonal
             }
             else if(currentboard[currentY - i][currentX + i]->getTeamColour() != teamcolor){
-                if(currentboard[currentY - i][currentX + i]->getPieceType() == 'B')return true;
+                if(currentboard[currentY - i][currentX + i]->getPieceType() == 'B') {
+                    piece::posArr[piece_X] = currentX + i;
+                    piece::posArr[piece_Y] = currentY - i;
+                    return true;
+                }
                 else break;
             }
         }
@@ -35,7 +43,11 @@ bool bishop::can_bishop_check_king(int currentX, int currentY, char teamcolor, p
                 break;//because friend teammate is protecting top-left diagonal
             }
             else if(currentboard[currentY + i][currentX - i]->getTeamColour() != teamcolor){
-                if(currentboard[currentY + i][currentX - i]->getPieceType() == 'B')return true;
+                if(currentboard[currentY + i][currentX - i]->getPieceType() == 'B') {
+                    piece::posArr[piece_X] = currentX - i;
+                    piece::posArr[piece_Y] = currentY + i;
+                    return true;
+                }
                 else break;
             }
         }
@@ -48,7 +60,11 @@ bool bishop::can_bishop_check_king(int currentX, int currentY, char teamcolor, p
                 break;//because friend teammate is protecting top-left diagonal
             }
             else if(currentboard[currentY + i][currentX + i]->getTeamColour() != teamcolor){
-                if(currentboard[currentY + i][currentX + i]->getPieceType() == 'B')return true;
+                if(currentboard[currentY + i][currentX + i]->getPieceType() == 'B') {
+                    piece::posArr[piece_X] = currentX + i;
+                    piece::posArr[piece_Y] = currentY + i;
+                    return true;
+                }
                 else break;
             }
         }

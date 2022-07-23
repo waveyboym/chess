@@ -188,6 +188,8 @@ void board::changePosition(int oldX, int oldY, int newX, int newY){
     newdata.oldY = oldY;
     newdata.newX = newX;
     newdata.newY = newY;
+    newdata.pieceCol = this->board2D[oldY][oldX]->getTeamColour();
+    newdata.pieceType = this->board2D[oldY][oldX]->getPieceType();
     newdata.pieceTakenCol = 'e';
     newdata.pieceTakenType = 'e';
     newdata.tookOutPiece = false;
@@ -216,6 +218,23 @@ void board::upgradePawnToQueen(int currentX, int currentY, char teamcolor){
         std::cout << "upgrading white pawn to queen" << std::endl;
         delete this->board2D[currentY][currentX];
         this->board2D[currentY][currentX] = new queen(currentX, currentY, 'w', 'q');
+    }
+}
+
+void board::undoPawnToQueenUpgrade(previousMove olddata)
+{
+    if (olddata.pieceType != 'p')
+        return;
+
+    if (olddata.pieceCol == 'b' && olddata.oldY == 1) {
+
+        delete this->board2D[olddata.oldY][olddata.oldX];
+        this->board2D[olddata.oldY][olddata.oldX] = new pawn(olddata.oldX, olddata.oldY, 'b', 'p');
+    }
+    else if (olddata.pieceCol == 'w' && olddata.oldY == 6) {
+
+        delete this->board2D[olddata.oldY][olddata.oldX];
+        this->board2D[olddata.oldY][olddata.oldX] = new pawn(olddata.oldX, olddata.oldY, 'w', 'p');
     }
 }
 
@@ -275,6 +294,38 @@ void board::undoPreviousMove(){
         }
     }
     else this->board2D[oldData.newY][oldData.newX] = NULL;
+
+    this->undoPawnToQueenUpgrade(oldData);
+}
+
+bool board::anyPrevMovesAvailable()
+{
+    if (this->stackADT->empty())return false;
+    else return true;
+}
+
+bool board::gameOver(char teamcolor)
+{
+    tempKingCoordsStore XY = getKingXY_Co_Ord(this->board2D, teamcolor);
+    if (XY.x == -1 || XY.y == -1)return true;
+
+    if (!king::can_CheckKing(XY.x, XY.y, teamcolor, this->board2D))return false;
+    
+    if (king::can_piece_save_King(teamcolor, this->board2D)) {
+        std::cout << "there are pieces that can resolve the possible checkmate for: " << determineTeamColor(teamcolor) <<std::endl;
+        
+        return false;
+    }
+
+    if (king::can_move_out_of_check(XY.x, XY.y, teamcolor, this->board2D)) {
+
+        std::cout << determineTeamColor(teamcolor) << "'s king is in risk of being checked but there " <<
+            "are open spots for " << determineTeamColor(teamcolor) << "'s king to move to" << std::endl;
+
+        return false;
+    }
+
+    return true;
 }
 
 piece*** board::getBoard(){ return this->board2D;}

@@ -174,6 +174,15 @@ class board{
         void upgradePawnToQueen(int currentX, int currentY, char teamcolor);
 
         /**
+        * @brief undoes a pawn to queen upgrade if one did happen
+        *
+        * @param olddata a struct containing information abput the most recently completed move
+        *
+        * @return void
+        */
+        void undoPawnToQueenUpgrade(previousMove olddata);
+
+        /**
         * @brief checks if the king is in check, returns true if it is
         * 
         * @param teamcolor the team color to check for
@@ -190,6 +199,24 @@ class board{
         * @return void
         */
         void undoPreviousMove();
+
+        /**
+        * @brief checks if the undo move stack has any data
+        *
+        * @param none
+        *
+        * @return bool
+        */
+        bool anyPrevMovesAvailable();
+
+        /**
+        * @brief checks if the game is over for the current team, so if the game is over and teamcolor is 'w', then the white team has lost
+        *
+        * @param teamcolor
+        *
+        * @return bool
+        */
+        bool gameOver(char teamcolor);
 
 };
 

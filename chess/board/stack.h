@@ -13,6 +13,8 @@ struct previousMove{
     int oldX;
     int oldY;
     bool tookOutPiece;
+    char pieceType;
+    char pieceCol;
     char pieceTakenType;
     char pieceTakenCol;
     previousMove* below;
@@ -52,10 +54,12 @@ class stack{
         * @param tookPiece the new x co-ord to change to
         * @param piecetype the new y co-ord to change to
         * @param teamcolor the team color of the piece that was captured
+        * @param posInArr the position of the piece in the texture and rect array
+        * @param takenPiecePosInArr the position of the piece taken in the texture and rect array
         * 
         * @return void
         */
-        void push(int newX, int newY, int oldX, int oldY, bool tookPiece, char piecetype, char teamcolor);
+        void push(int newX, int newY, int oldX, int oldY, bool tookPiece, char piecetype, char teamcolor, char takenpiecetype, char takenpicecol);
 
         /**
         * @brief pushes the mot recently completed move onto the stack
@@ -83,6 +87,15 @@ class stack{
         * @return void
         */
         void clearStack();
+
+        /**
+        * @brief checks if stack is empty and returns true if it is else false
+        *
+        * @param none
+        *
+        * @return bool
+        */
+        bool empty();
 };
 
 #endif

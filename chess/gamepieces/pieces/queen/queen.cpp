@@ -10,7 +10,11 @@ bool queen::can_queen_check_king(int currentX, int currentY, char teamcolor, pie
                 break;//because friend teammate is protecting top-left diagonal
             }
             else if(currentboard[currentY - i][currentX - i]->getTeamColour() != teamcolor){
-                if(currentboard[currentY - i][currentX - i]->getPieceType() == 'q')return true;
+                if(currentboard[currentY - i][currentX - i]->getPieceType() == 'q') {
+                    piece::posArr[piece_X] = currentX - i;
+                    piece::posArr[piece_Y] = currentY - i;
+                    return true;
+                }
                 else break;
             }
         }
@@ -23,7 +27,11 @@ bool queen::can_queen_check_king(int currentX, int currentY, char teamcolor, pie
                 break;//because friend teammate is protecting top-left diagonal
             }
             else if(currentboard[currentY - i][currentX + i]->getTeamColour() != teamcolor){
-                if(currentboard[currentY - i][currentX + i]->getPieceType() == 'q')return true;
+                if(currentboard[currentY - i][currentX + i]->getPieceType() == 'q') {
+                    piece::posArr[piece_X] = currentX + i;
+                    piece::posArr[piece_Y] = currentY - i;
+                    return true;
+                }
                 else break;
             }
         }
@@ -36,7 +44,11 @@ bool queen::can_queen_check_king(int currentX, int currentY, char teamcolor, pie
                 break;//because friend teammate is protecting top-left diagonal
             }
             else if(currentboard[currentY + i][currentX - i]->getTeamColour() != teamcolor){
-                if(currentboard[currentY + i][currentX - i]->getPieceType() == 'q')return true;
+                if(currentboard[currentY + i][currentX - i]->getPieceType() == 'q') {
+                    piece::posArr[piece_X] = currentX - i;
+                    piece::posArr[piece_Y] = currentY + i;
+                    return true;
+                }
                 else break;
             }
         }
@@ -49,7 +61,11 @@ bool queen::can_queen_check_king(int currentX, int currentY, char teamcolor, pie
                 break;//because friend teammate is protecting top-left diagonal
             }
             else if(currentboard[currentY + i][currentX + i]->getTeamColour() != teamcolor){
-                if(currentboard[currentY + i][currentX + i]->getPieceType() == 'q')return true;
+                if(currentboard[currentY + i][currentX + i]->getPieceType() == 'q') {
+                    piece::posArr[piece_X] = currentX + i;
+                    piece::posArr[piece_Y] = currentY + i;
+                    return true;
+                }
                 else break;
             }
         }
@@ -61,7 +77,11 @@ bool queen::can_queen_check_king(int currentX, int currentY, char teamcolor, pie
                 break;//because friend teammate is protecting top-left diagonal
             }
             else if(currentboard[currentY - i][currentX]->getTeamColour() != teamcolor){
-                if(currentboard[currentY - i][currentX]->getPieceType() == 'q')return true;
+                if(currentboard[currentY - i][currentX]->getPieceType() == 'q') {
+                    piece::posArr[piece_X] = currentX;
+                    piece::posArr[piece_Y] = currentY - i;
+                    return true;
+                }
                 else break;//no comprimising piece
             }
         }
@@ -73,7 +93,11 @@ bool queen::can_queen_check_king(int currentX, int currentY, char teamcolor, pie
                 break;//because friend teammate is protecting top-left diagonal
             }
             else if(currentboard[currentY + i][currentX]->getTeamColour() != teamcolor){
-                if(currentboard[currentY + i][currentX]->getPieceType() == 'q')return true;
+                if(currentboard[currentY + i][currentX]->getPieceType() == 'q') {
+                    piece::posArr[piece_X] = currentX;
+                    piece::posArr[piece_Y] = currentY + i;
+                    return true;
+                }
                 else break;//no comprimising piece
             }
         }
@@ -85,7 +109,11 @@ bool queen::can_queen_check_king(int currentX, int currentY, char teamcolor, pie
                 break;//because friend teammate is protecting top-left diagonal
             }
             else if(currentboard[currentY][currentX - i]->getTeamColour() != teamcolor){
-                if(currentboard[currentY][currentX - i]->getPieceType() == 'q')return true;
+                if(currentboard[currentY][currentX - i]->getPieceType() == 'q') {
+                    piece::posArr[piece_X] = currentX - i;
+                    piece::posArr[piece_Y] = currentY;
+                    return true;
+                }
                 else break;//no comprimising piece
             }
         }
@@ -97,7 +125,11 @@ bool queen::can_queen_check_king(int currentX, int currentY, char teamcolor, pie
                 break;//because friend teammate is protecting top-left diagonal
             }
             else if(currentboard[currentY][currentX + i]->getTeamColour() != teamcolor){
-                if(currentboard[currentY][currentX + i]->getPieceType() == 'q')return true;
+                if(currentboard[currentY][currentX + i]->getPieceType() == 'q') {
+                    piece::posArr[piece_X] = currentX + i;
+                    piece::posArr[piece_Y] = currentY;
+                    return true;
+                }
                 else break;//no comprimising piece
             }
         }

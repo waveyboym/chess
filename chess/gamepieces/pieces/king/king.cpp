@@ -140,6 +140,25 @@ bool king::can_move_out_of_check(int currentX, int currentY, char teamcolor, pie
     return false;
 }
 
+bool king::can_piece_save_King(char teamcolor, piece*** currentboard){
+    //change of team color.So if team color is white, then turn it to black because we want white pieces that can
+    //possibly take out the black piece threat
+    if (teamcolor == 'w') teamcolor = 'b';
+    else if(teamcolor == 'b') teamcolor = 'w';
+
+    if (piece::posArr[piece_X] == - 1 || piece::posArr[piece_Y] == -1) {
+        std::cout << "a fatal error has occured in the can_piece_save_king function" << std::endl;
+        return false;
+    }
+
+    //repurpose these functions so they can now check instead if any piece can eliminate the piece at the pos specififed in the vector
+    if (bishop::can_bishop_check_king(piece::posArr[piece_X], piece::posArr[piece_Y], teamcolor, currentboard))return true;
+    if (knight::can_knight_check_king(piece::posArr[piece_X], piece::posArr[piece_Y], teamcolor, currentboard))return true;
+    if (pawn::can_pawn_check_king(piece::posArr[piece_X], piece::posArr[piece_Y], teamcolor, currentboard))return true;
+    if (queen::can_queen_check_king(piece::posArr[piece_X], piece::posArr[piece_Y], teamcolor, currentboard))return true;
+    if (rook::can_rook_check_king(piece::posArr[piece_X], piece::posArr[piece_Y], teamcolor, currentboard))return true;
+    return false;
+}
 
 king::king(int newX, int newY, char teamcolour, char piecetype)
     : piece(teamcolour, piecetype){

@@ -11,6 +11,15 @@
 #include <sstream>
 #include "../linkedlist/Llist.h"
 
+ /**
+* @brief represents the x and y co-ord of the piece that can check the king
+*
+*/
+enum XYposOfPiece {
+    piece_X, //=0
+    piece_Y //=1
+};
+
 class piece {
     protected:
 
@@ -200,6 +209,12 @@ class piece {
         * @return bool
         */
         static bool checkIfValid(int x, int y, piece*** currentboard);
+
+        /**
+        * @brief stores the x and y co-ord of the piece that may check king
+        *
+        */
+        static int posArr[2];
 };
 
 #endif
