@@ -328,6 +328,31 @@ bool board::gameOver(char teamcolor)
     return true;
 }
 
+bool board::stalemate(char teamcolor)
+{
+    for (int i = 0; i < this->ROWSIZE; ++i)
+    {
+        for (int j = 0; j < this->COLSIZE; ++j)
+        {
+            if (this->board2D[i][j] != NULL) 
+            {
+                if (this->board2D[i][j]->getPieceType() != 'K' && this->board2D[i][j]->getTeamColour() == teamcolor)
+                {
+                    return false;
+                }
+            }
+        }
+    }
+
+    tempKingCoordsStore XY = getKingXY_Co_Ord(this->board2D, teamcolor);
+    if (XY.x == -1 || XY.y == -1)return true;
+
+    this->board2D[XY.y][XY.x]->checkOpenSpots(this->board2D);
+    if(this->spotsFound(XY.x, XY.y))return true;
+
+    return true;
+}
+
 piece*** board::getBoard(){ return this->board2D;}
 
 void board::findOpenSpots(int currentX, int currentY){this->board2D[currentY][currentX]->checkOpenSpots(this->board2D);}

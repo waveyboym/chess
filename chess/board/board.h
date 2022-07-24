@@ -218,6 +218,15 @@ class board{
         */
         bool gameOver(char teamcolor);
 
+        /**
+        * @brief checks if the game is a stalemate or not
+        *
+        * @param teamcolor the team color to check for
+        *
+        * @return bool
+        */
+        bool stalemate(char teamcolor);
+
 };
 
 #endif

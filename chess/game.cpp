@@ -85,6 +85,17 @@ char game::playgame(){
 
             continue;
         }
+
+        if(this->boardgame->stalemate(playercolor(this->currentPlayerTurn))){
+            std::cout << "Game has ended as a stalemate. " <<  
+            "press r to restart or any other letter to quit\n\n";
+            std::cin >> endgame;
+
+            if(endgame != 'r')endgame == 'q';
+
+            continue;
+        }
+
         std::cout << "press ctrl-c or q to exit the program\n";
         std::cout << "or enter any character to continue or press r to restart the game\n";
         std::cout << "or enter u to undo the previous move:\n";
